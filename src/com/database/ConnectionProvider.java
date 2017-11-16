@@ -52,8 +52,41 @@ public class ConnectionProvider {
         return null;
     }
 
-    public boolean setNote(Note note){
+    public boolean setNote(String text) {
+        try {
+            String query = "INSERT INTO notes (text) VALUES(?)";
+            Connection conn = getConnection();
+            try {
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, text);
+                ps.execute();
+                return true;
+            } catch (SQLException ex) {
+                System.out.println("Error: 'insertClientDetailsToDatabase' :" + ex.toString());
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.toString());
+            return false;
+        }
+    }
 
-        return false;
+    public boolean deleteNote(String text) {
+        try {
+            String query = "DELETE FROM notes WHERE text = ?";
+            Connection conn = getConnection();
+            try {
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1, text);
+                ps.execute();
+                return true;
+            } catch (SQLException ex) {
+                System.out.println("Error: 'insertClientDetailsToDatabase' :" + ex.toString());
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.toString());
+            return false;
+        }
     }
 }

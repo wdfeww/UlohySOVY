@@ -21,32 +21,48 @@ public class App {
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateList();
+                if (conn.setNote(textField1.getText()))
+                    updateList();
+                textField1.setText("");
             }
         });
         list1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                System.out.println("selected "+ e.toString());
-                System.out.println(e.);
+                deleteFromList();
             }
         });
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("App");
-        frame.setContentPane(new App().mainPanel);
+        App ui = new App();
+        JFrame frame = new JFrame("Ulohy");
+        frame.setContentPane(ui.mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        ui.init();
+    }
+
+    private void init() {
+        updateList();
     }
 
     private void updateList() {
         DefaultListModel<String> model = new DefaultListModel<String>();
         List<Note> notes = conn.getAllNotes();
-        for(Note n: notes){
+        for (Note n : notes) {
             model.addElement(n.getText());
         }
         list1.setModel(model);
+    }
+
+    private void deleteFromList() {
+        DefaultListModel<String> model = (DefaultListModel) list1.getModel();
+        int selectedIndex = list1.getSelectedIndex();
+        if (selectedIndex != -1) {
+            conn.deleteNote(model.elementAt(selectedIndex));
+            model.remove(selectedIndex);
+        }
     }
 }
